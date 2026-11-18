@@ -5,19 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AtelierVision AI | Fashion Style & Apparel Classifier</title>
     
-    <!-- Google Fonts: Cormorant Garamond for luxury editorial headings & Plus Jakarta Sans for clean UI -->
+    <!-- Google Fonts: Cormorant Garamond & Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Tailwind CSS via CDN -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Pinned Stable Versions of TensorFlow.js & Teachable Machine Image Libraries -->
+    <!-- TensorFlow.js & Teachable Machine Image Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.21.0/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.5/dist/teachablemachine-image.min.js"></script>
 
-    <!-- Tailwind Custom Configuration for Fashion Editorial Palette -->
     <script>
         tailwind.config = {
             theme: {
@@ -74,6 +73,13 @@
     </script>
 
     <style>
+        /* Fallback base styles in case CDN takes a moment to load */
+        body {
+            background-color: #fdfcfb;
+            color: #181516;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+        }
         .atelier-canvas {
             background-color: #faf7f2;
             background-image: 
