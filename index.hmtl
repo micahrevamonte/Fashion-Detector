@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AtelierVision AI | Fashion Style & Apparel Classifier</title>
+    
+    <!-- Google Fonts: Cormorant Garamond for luxury editorial headings & Plus Jakarta Sans for clean UI -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- TensorFlow.js & Teachable Machine Image Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+
+    <!-- Tailwind Custom Configuration for Fashion Editorial Palette -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        editorial: ['Cormorant Garamond', 'serif'],
+                    },
+                    colors: {
+                        ivory: {
+                            50: '#fdfcfb',
+                            100: '#faf7f2',
+                            200: '#f3ece1',
+                            300: '#e6d9c6',
+                        },
+                        noir: {
+                            800: '#272324',
+                            900: '#181516',
+                            950: '#0f0d0e',
+                        },
+                        terracotta: {
+                            400: '#d97757',
+                            500: '#c25e3e',
+                            600: '#a6492c',
+                        },
+                        champagne: {
+                            300: '#e8d5b7',
+                            400: '#d4b88c',
+                            500: '#b89660',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Subtle fashion lookbook grid & linen weave texture */
+        .atelier-canvas {
+            background-color: #faf7f2;
+            background-image: 
+                radial-gradient(at 15% 15%, rgba(212, 184, 140, 0.16) 0px, transparent 50%),
+                radial-gradient(at 85% 20%, rgba(194, 94, 62, 0.08) 0px, transparent 50%);
+        }
+
+        /* Editorial tailoring stitch divider */
+        .stitch-line {
+            background-image: linear-gradient(to right, #d4b88c 50%, transparent 50%);
+            background-size: 12px 1px;
+            background-repeat: repeat-x;
+        }
+    </style>
+</head>
+<body class="bg-ivory-50 text-noir-900 antialiased selection:bg-noir-900 selection:text-ivory-50 flex flex-col min-h-screen">
+
+    <!-- Sticky Editorial Navigation Bar -->
+    <header class="sticky top-0 z-40 w-full backdrop-blur-md bg-ivory-50/90 border-b border-ivory-300/80 transition-all">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- Brand Identity -->
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-full bg-noir-900 flex items-center justify-center text-champagne-300 shadow-sm">
+                    <!-- Hanger / Couture Silhouette Icon -->
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 6a2 2 0 10-2-2c0 .74.4 1.38 1 1.72V7L3.5 13.2A1.5 1.5 0 004.45 16h15.1a1.5 1.5 0 00.95-2.8L13 7V5.72c.6-.34 1-.98 1-1.72a2 2 0 00-2-2z" />
+                    </svg>
+                </div>
+                <div>
+                    <span class="font-editorial font-bold text-2xl tracking-tight text-noir-950">AtelierVision<span class="italic text-terracotta-500 font-semibold">AI</span></span>
+                    <span class="hidden sm:inline-block ml-2.5 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-widest bg-ivory-200 text-noir-800 rounded-full border border-ivory-300">Style Lookbook</span>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="flex items-center space-x-1 sm:space-x-5 text-xs sm:text-sm font-medium text-noir-800">
+                <a href="#classifier" class="px-3 py-2 rounded-full hover:text-terracotta-600 hover:bg-ivory-200/70 transition-colors">Style Studio</a>
+                <a href="#community-significance" class="px-3 py-2 rounded-full hover:text-terracotta-600 hover:bg-ivory-200/70 transition-colors">Community Impact</a>
+                <a href="#how-it-works" class="hidden md:inline-block px-3 py-2 rounded-full hover:text-terracotta-600 hover:bg-ivory-200/70 transition-colors">Atelier Tech</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+
+        <!-- Hero Section: High-Fashion Editorial Lookbook -->
+        <section class="relative overflow-hidden pt-14 pb-20 sm:pt-20 sm:pb-28 atelier-canvas border-b border-ivory-300/80">
+            <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <!-- Model Status Pill -->
+                <div class="inline-flex items-center space-x-2.5 px-4 py-1.5 rounded-full bg-white border border-ivory-300 shadow-sm mb-7">
+                    <span id="header-status-dot" class="w-2 h-2 rounded-full bg-champagne-500 animate-pulse"></span>
+                    <span id="header-status-text" class="text-[11px] font-bold uppercase tracking-[0.18em] text-noir-800">Curating Style Model...</span>
+                </div>
+                
+                <h1 class="font-editorial text-4xl sm:text-6xl lg:text-7xl font-bold text-noir-950 tracking-tight leading-[1.08] mb-6">
+                    Intelligent Style Recognition for <span class="italic font-semibold text-terracotta-500">Modern Wardrobes</span>
+                </h1>
+                
+                <p class="text-base sm:text-lg text-noir-800/80 max-w-2xl mx-auto leading-relaxed mb-9 font-normal">
+                    Analyze silhouettes, outfits, and fashion pieces directly in your browser. Powered by our custom-trained Teachable Machine model and TensorFlow.js—effortless, accessible, and 100% private on your device.
+                </p>
+
+                <div class="flex flex-wrap items-center justify-center gap-4">
+                    <a href="#classifier" class="px-7 py-3.5 rounded-full bg-noir-900 hover:bg-terracotta-600 text-ivory-50 font-semibold text-xs uppercase tracking-[0.15em] shadow-lg shadow-noir-900/15 transition-all transform hover:-translate-y-0.5">
+                        Enter Fitting Studio
+                    </a>
+                    <a href="#community-significance" class="px-7 py-3.5 rounded-full bg-white hover:bg-ivory-100 text-noir-900 font-semibold text-xs uppercase tracking-[0.15em] border border-ivory-300 shadow-sm transition-all">
+                        Community Significance
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Style & Outfit Classification Studio -->
+        <section id="classifier" class="py-14 sm:py-22 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-10 text-center sm:text-left flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-[0.2em] text-terracotta-500">Virtual Fitting Room</span>
+                    <h2 class="font-editorial text-3xl sm:text-4xl font-bold text-noir-950 mt-1">Interactive Style Studio</h2>
+                    <p class="text-noir-800/75 mt-1 text-sm sm:text-base">Step in front of your live camera or upload an outfit lookbook photo for instant style classification.</p>
+                </div>
+                <div class="inline-flex items-center space-x-2 text-xs text-noir-800 bg-white px-4 py-2 rounded-full border border-ivory-300 shadow-sm self-center sm:self-auto">
+                    <span class="font-semibold">Collection Model:</span>
+                    <code class="font-mono text-terracotta-600 bg-ivory-100 px-2 py-0.5 rounded-full">q93dwRknv</code>
+                </div>
+            </div>
+
+            <!-- Inline Notification Banner -->
+            <div id="notification-banner" class="hidden mb-6 p-4 rounded-2xl border flex items-start space-x-3 transition-all" role="alert">
+                <div class="flex-1 text-sm">
+                    <h3 id="notification-title" class="font-semibold"></h3>
+                    <p id="notification-message" class="mt-0.5 opacity-90"></p>
+                </div>
+                <button onclick="hideNotification()" class="text-noir-800/60 hover:text-noir-950 p-1 rounded-lg" aria-label="Close message">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <!-- Balanced 2-Column Editorial Studio Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <!-- Left Column: Lookbook Mirror / Photo Upload Viewport (7 cols) -->
+                <div class="lg:col-span-7 bg-white rounded-3xl border border-ivory-300 shadow-xl shadow-noir-900/5 overflow-hidden">
+                    
+                    <!-- Mode Switcher Bar -->
+                    <div class="p-3.5 bg-ivory-100/90 border-b border-ivory-300/80 flex items-center justify-between gap-2">
+                        <div class="grid grid-cols-2 gap-1.5 w-full sm:w-auto bg-ivory-200/80 p-1 rounded-full">
+                            <button id="tab-webcam" onclick="switchMode('webcam')" class="flex items-center justify-center space-x-2 px-5 py-2 rounded-full text-xs uppercase tracking-wider font-bold transition-all bg-noir-900 text-ivory-50 shadow-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                <span>Live Mirror</span>
+                            </button>
+                            <button id="tab-upload" onclick="switchMode('upload')" class="flex items-center justify-center space-x-2 px-5 py-2 rounded-full text-xs uppercase tracking-wider font-bold transition-all text-noir-800 hover:text-noir-950">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                <span>Lookbook Photo</span>
+                            </button>
+                        </div>
+
+                        <div id="viewport-badge" class="hidden sm:flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-white border border-ivory-300 text-noir-800 text-xs font-medium">
+                            <span class="w-2 h-2 rounded-full bg-champagne-400"></span>
+                            <span>Studio Standby</span>
+                        </div>
+                    </div>
+
+                    <!-- Viewport Content -->
+                    <div class="p-6 sm:p-9 flex flex-col items-center justify-center">
+                        
+                        <!-- WEBCAM MIRROR VIEWPORT -->
+                        <div id="webcam-section" class="w-full flex flex-col items-center">
+                            <div class="relative w-full max-w-md aspect-square bg-noir-950 rounded-2xl overflow-hidden shadow-inner border border-ivory-300 flex items-center justify-center">
+                                <div id="webcam-placeholder" class="text-center p-6 text-ivory-200 flex flex-col items-center">
+                                    <div class="w-16 h-16 rounded-full bg-noir-800 border border-champagne-400/30 flex items-center justify-center mb-4 text-champagne-300">
+                                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                    </div>
+                                    <p class="font-editorial text-xl font-semibold text-ivory-50">Smart Fitting Mirror Inactive</p>
+                                    <p class="text-xs text-ivory-300/80 mt-1.5 max-w-xs leading-relaxed">Click "Open Style Mirror" below to enable your camera and classify garments or outfits in real time.</p>
+                                </div>
+
+                                <div id="webcam-canvas-container" class="w-full h-full hidden [&>canvas]:w-full [&>canvas]:h-full [&>canvas]:object-cover"></div>
+                                
+                                <!-- Editorial Framing Guides -->
+                                <div id="scanner-overlay" class="hidden pointer-events-none absolute inset-4 border border-champagne-300/40 rounded-xl">
+                                    <div class="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-champagne-300 rounded-tl"></div>
+                                    <div class="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-champagne-300 rounded-tr"></div>
+                                    <div class="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-champagne-300 rounded-bl"></div>
+                                    <div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-champagne-300 rounded-br"></div>
+                                </div>
+                            </div>
+
+                            <div class="mt-6 flex flex-wrap items-center justify-center gap-3 w-full">
+                                <button id="btn-start-cam" onclick="startWebcam()" disabled class="flex items-center space-x-2 px-7 py-3 rounded-full bg-noir-900 hover:bg-terracotta-600 disabled:bg-ivory-300 disabled:text-noir-800/40 disabled:cursor-not-allowed text-ivory-50 font-semibold text-xs uppercase tracking-widest shadow-md transition-all">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    <span>Open Style Mirror</span>
+                                </button>
+                                <button id="btn-stop-cam" onclick="stopWebcam()" class="hidden items-center space-x-2 px-7 py-3 rounded-full bg-terracotta-600 hover:bg-terracotta-500 text-white font-semibold text-xs uppercase tracking-widest shadow-md transition-all">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"/></svg>
+                                    <span>Close Mirror</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- IMAGE UPLOAD VIEWPORT -->
+                        <div id="upload-section" class="hidden w-full flex flex-col items-center">
+                            <label for="image-file-input" id="drop-zone" class="w-full max-w-md aspect-square rounded-2xl border-2 border-dashed border-ivory-300 hover:border-terracotta-500 bg-ivory-50 hover:bg-ivory-100/70 transition-all cursor-pointer flex flex-col items-center justify-center p-6 text-center relative overflow-hidden group">
+                                <div id="upload-prompt" class="flex flex-col items-center">
+                                    <div class="w-14 h-14 rounded-full bg-white shadow-sm border border-ivory-300 flex items-center justify-center text-terracotta-500 group-hover:scale-105 transition-transform mb-4">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                                    </div>
+                                    <p class="font-editorial text-xl font-bold text-noir-900">Upload or Drop a Lookbook Photo</p>
+                                    <p class="text-xs text-noir-800/60 mt-1">Supports PNG, JPG, WEBP (Processed 100% locally)</p>
+                                </div>
+
+                                <img id="uploaded-image-preview" alt="Uploaded outfit sample for style classification" class="hidden w-full h-full object-contain rounded-xl" />
+                                <input id="image-file-input" type="file" accept="image/*" class="sr-only" onchange="handleImageUpload(event)" />
+                            </label>
+
+                            <div class="mt-6 flex items-center justify-center gap-3">
+                                <button type="button" onclick="document.getElementById('image-file-input').click()" class="px-6 py-2.5 rounded-full bg-white hover:bg-ivory-100 text-noir-900 font-semibold text-xs uppercase tracking-wider border border-ivory-300 shadow-sm transition-all">
+                                    Select Another Piece
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Right Column: Editorial Style Card & Confidence Breakdown (5 cols) -->
+                <div class="lg:col-span-5 flex flex-col gap-6">
+                    
+                    <!-- Top Style Match Card -->
+                    <div class="bg-noir-900 rounded-3xl p-7 sm:p-8 text-ivory-50 shadow-xl relative overflow-hidden border border-noir-800">
+                        <div class="absolute -right-10 -top-10 w-40 h-40 bg-terracotta-500/20 rounded-full blur-2xl pointer-events-none"></div>
+                        <div class="absolute -left-8 -bottom-8 w-32 h-32 bg-champagne-400/15 rounded-full blur-2xl pointer-events-none"></div>
+                        
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-[11px] font-bold uppercase tracking-[0.2em] text-champagne-300">Primary Style Match</span>
+                            <span id="inference-time-badge" class="text-xs font-mono text-ivory-200 bg-white/10 px-2.5 py-0.5 rounded-full">Ready</span>
+                        </div>
+                        
+                        <div id="top-class-name" class="font-editorial text-3xl sm:text-4xl font-bold tracking-tight text-white truncate">
+                            Awaiting Look...
+                        </div>
+                        
+                        <div class="mt-4 flex items-baseline space-x-2">
+                            <span id="top-class-confidence" class="font-editorial text-4xl sm:text-5xl font-bold text-terracotta-400">0.0%</span>
+                            <span class="text-xs uppercase tracking-wider text-ivory-300/80">style match</span>
+                        </div>
+                    </div>
+
+                    <!-- Style Silhouette Distribution Card -->
+                    <div class="bg-white rounded-3xl border border-ivory-300 p-6 sm:p-7 shadow-lg shadow-noir-900/5">
+                        <div class="flex items-center justify-between mb-5">
+                            <h3 class="font-editorial font-bold text-noir-950 text-2xl">Style Breakdown</h3>
+                            <span id="total-classes-count" class="text-xs font-semibold text-noir-800 bg-ivory-100 border border-ivory-300 px-3 py-1 rounded-full">Loading styles...</span>
+                        </div>
+
+                        <div id="predictions-container" class="space-y-4">
+                            <!-- Skeleton Loading State -->
+                            <div class="animate-pulse space-y-4">
+                                <div>
+                                    <div class="flex justify-between text-sm mb-1.5">
+                                        <div class="h-4 bg-ivory-200 rounded w-28"></div>
+                                        <div class="h-4 bg-ivory-200 rounded w-12"></div>
+                                    </div>
+                                    <div class="w-full bg-ivory-100 rounded-full h-2.5"></div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-sm mb-1.5">
+                                        <div class="h-4 bg-ivory-200 rounded w-36"></div>
+                                        <div class="h-4 bg-ivory-200 rounded w-12"></div>
+                                    </div>
+                                    <div class="w-full bg-ivory-100 rounded-full h-2.5"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 pt-4 border-t border-ivory-200 flex items-center space-x-2.5 text-xs text-noir-800/75">
+                            <svg class="w-4 h-4 text-terracotta-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                            <span><strong>Private Fitting Room:</strong> Your camera mirror and outfit photos never leave your browser.</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- DEDICATED SECTION: SIGNIFICANCE TO THE FASHION & LOCAL COMMUNITY -->
+        <section id="community-significance" class="py-16 sm:py-24 bg-white border-t border-ivory-300/80">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <!-- Section Header -->
+                <div class="max-w-3xl mx-auto text-center mb-14">
+                    <span class="inline-block px-3.5 py-1 rounded-full bg-ivory-100 text-terracotta-600 border border-ivory-300 text-xs font-bold uppercase tracking-[0.18em] mb-3">Significance to the Community</span>
+                    <h2 class="font-editorial text-3xl sm:text-5xl font-bold text-noir-950 tracking-tight mb-4">
+                        Why AtelierVision AI Matters to Everyday Dressers &amp; Creators
+                    </h2>
+                    <p class="text-noir-800/80 text-base sm:text-lg leading-relaxed">
+                        Fashion styling tools and apparel recognition technology are often locked behind expensive luxury retail apps or platforms that harvest personal photos. By bringing our custom-trained model (<code class="font-mono text-terracotta-600 bg-ivory-100 px-1.5 py-0.5 rounded text-sm">q93dwRknv</code>) into this free, open webpage, we empower shoppers, thrift communities, and student designers with instant visual style guidance.
+                    </p>
+                </div>
+
+                <!-- 3-Column Fashion & Community Value Pillars -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    
+                    <!-- Card 1: Connects Live Mirror & Photo Upload to Thrift, Wardrobe & Small Boutiques -->
+                    <article class="bg-ivory-50 rounded-3xl p-8 border border-ivory-300 hover:border-terracotta-400 hover:shadow-xl hover:shadow-noir-900/5 transition-all flex flex-col">
+                        <div class="w-12 h-12 rounded-full bg-noir-900 text-champagne-300 flex items-center justify-center shadow-sm mb-6">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+                        </div>
+                        <h3 class="font-editorial text-2xl font-bold text-noir-950 mb-3">Empowering Thrifters &amp; Local Boutiques</h3>
+                        <p class="text-noir-800/80 text-sm leading-relaxed flex-grow">
+                            Whether sorting donations at a community thrift drive, cataloging pieces for a small local shop, or organizing your closet at home, this webpage's <strong>Live Mirror</strong> and <strong>Lookbook Photo</strong> tools classify garments in seconds on any smartphone or laptop—without paid subscriptions or specialized scanners.
+                        </p>
+                        <div class="mt-6 pt-4 border-t border-ivory-300/80 text-xs font-bold uppercase tracking-wider text-terracotta-600">
+                            Value to Users: Zero-cost wardrobe &amp; catalog sorting
+                        </div>
+                    </article>
+
+                    <!-- Card 2: Connects Style Breakdown Bars to Fashion Students & Inclusive Styling -->
+                    <article class="bg-ivory-50 rounded-3xl p-8 border border-ivory-300 hover:border-terracotta-400 hover:shadow-xl hover:shadow-noir-900/5 transition-all flex flex-col">
+                        <div class="w-12 h-12 rounded-full bg-terracotta-500 text-white flex items-center justify-center shadow-sm mb-6">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+                        </div>
+                        <h3 class="font-editorial text-2xl font-bold text-noir-950 mb-3">Accessible Style Feedback &amp; Design Learning</h3>
+                        <p class="text-noir-800/80 text-sm leading-relaxed flex-grow">
+                            For fashion students, emerging stylists, and individuals seeking quick outfit confirmation, our live <strong>Style Breakdown</strong> bars offer transparent, real-time visual feedback. Seeing exact match percentages helps users experiment with styling combinations and understand how computer vision interprets fashion aesthetics.
+                        </p>
+                        <div class="mt-6 pt-4 border-t border-ivory-300/80 text-xs font-bold uppercase tracking-wider text-terracotta-600">
+                            Value to Users: Instant, encouraging styling confidence
+                        </div>
+                    </article>
+
+                    <!-- Card 3: Connects Client-Side TensorFlow.js to Dressing-Room Privacy -->
+                    <article class="bg-ivory-50 rounded-3xl p-8 border border-ivory-300 hover:border-terracotta-400 hover:shadow-xl hover:shadow-noir-900/5 transition-all flex flex-col">
+                        <div class="w-12 h-12 rounded-full bg-champagne-500 text-white flex items-center justify-center shadow-sm mb-6">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                        </div>
+                        <h3 class="font-editorial text-2xl font-bold text-noir-950 mb-3">True Fitting-Room Privacy</h3>
+                        <p class="text-noir-800/80 text-sm leading-relaxed flex-grow">
+                            Trying on outfits or photographing personal wardrobes requires complete trust. Because TensorFlow.js runs the neural model strictly inside your local browser, zero webcam frames or outfit photos are ever uploaded to external cloud servers—keeping your personal lookbook strictly yours.
+                        </p>
+                        <div class="mt-6 pt-4 border-t border-ivory-300/80 text-xs font-bold uppercase tracking-wider text-terracotta-600">
+                            Value to Users: 100% private on-device styling
+                        </div>
+                    </article>
+
+                </div>
+
+                <!-- Editorial Callout Banner -->
+                <div class="mt-12 rounded-3xl bg-noir-900 p-8 sm:p-10 text-ivory-50 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 border border-noir-800">
+                    <div class="max-w-2xl">
+                        <span class="inline-block px-3 py-1 rounded-full bg-white/10 text-champagne-300 text-[11px] font-bold uppercase tracking-[0.18em] mb-2">Open Community Lookbook</span>
+                        <h4 class="font-editorial text-2xl sm:text-3xl font-bold mb-2">Style Smarter, Share Freely</h4>
+                        <p class="text-sm sm:text-base text-ivory-200/85 leading-relaxed">
+                            Hosted as a lightweight single-file webpage on GitHub Pages, AtelierVision AI can be shared with classmates, thrift volunteers, or friends via a single link—turning any browser into an instant smart fitting mirror.
+                        </p>
+                    </div>
+                    <a href="#classifier" class="flex-shrink-0 px-7 py-3.5 rounded-full bg-terracotta-500 hover:bg-terracotta-400 text-white font-bold text-xs uppercase tracking-[0.15em] shadow-lg transition-all">
+                        Test Your Look Now
+                    </a>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- How It Works Architecture Overview -->
+        <section id="how-it-works" class="py-16 bg-ivory-100/70 border-t border-ivory-300/80">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-[0.2em] text-terracotta-500">Craft &amp; Technology</span>
+                        <h2 class="font-editorial text-3xl font-bold text-noir-950 mt-1">How AtelierVision AI Works</h2>
+                    </div>
+                    <p class="text-sm text-noir-800/75 max-w-md">Tailored into a single GitHub Pages-ready HTML file for effortless deployment.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                    <div class="bg-white p-6 rounded-2xl border border-ivory-300 shadow-sm">
+                        <div class="text-terracotta-600 font-editorial font-bold text-lg mb-1.5">01. Browser Model Sync</div>
+                        <p class="text-xs text-noir-800/75 leading-relaxed">Loads your trained Teachable Machine style model directly via TensorFlow.js when the lookbook opens.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border border-ivory-300 shadow-sm">
+                        <div class="text-terracotta-600 font-editorial font-bold text-lg mb-1.5">02. Mirror &amp; Photo Modes</div>
+                        <p class="text-xs text-noir-800/75 leading-relaxed">Supports real-time webcam outfit checks and drag-and-drop lookbook image uploads.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border border-ivory-300 shadow-sm">
+                        <div class="text-terracotta-600 font-editorial font-bold text-lg mb-1.5">03. Live Style Telemetry</div>
+                        <p class="text-xs text-noir-800/75 leading-relaxed">Displays top matched style categories, confidence percentages, and millisecond response speed.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border border-ivory-300 shadow-sm">
+                        <div class="text-terracotta-600 font-editorial font-bold text-lg mb-1.5">04. Zero-Cloud Privacy</div>
+                        <p class="text-xs text-noir-800/75 leading-relaxed">Performs all inference locally in the browser so personal wardrobe images never leave your device.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-noir-950 text-ivory-300 py-8 border-t border-noir-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+            <p>AtelierVision AI • Powered by TensorFlow.js &amp; Google Teachable Machine (<code class="font-mono text-champagne-300">q93dwRknv</code>)</p>
+            <p class="text-ivory-300/70">100% On-Device Styling • Private &amp; Accessible to Everyone</p>
+        </div>
+    </footer>
+
+    <!-- Teachable Machine Interactive Script -->
+    <script>
+        const MODEL_URL = "https://teachablemachine.withgoogle.com/models/q93dwRknv/";
+        let model, webcam, maxPredictions;
+        let isWebcamRunning = false;
+        let animationFrameId = null;
+
+        async function initModel() {
+            const statusDot = document.getElementById('header-status-dot');
+            const statusText = document.getElementById('header-status-text');
+            const startBtn = document.getElementById('btn-start-cam');
+
+            try {
+                const modelURL = MODEL_URL + "model.json";
+                const metadataURL = MODEL_URL + "metadata.json";
+                model = await tmImage.load(modelURL, metadataURL);
+                maxPredictions = model.getTotalClasses();
+
+                statusDot.classList.remove('bg-champagne-500');
+                statusDot.classList.add('bg-emerald-500');
+                statusText.textContent = "Style Collection Ready";
+                startBtn.disabled = false;
+
+                document.getElementById('total-classes-count').textContent = `${maxPredictions} Style Categories`;
+                renderEmptyBars(model.getClassLabels());
+            } catch (error) {
+                statusDot.classList.remove('bg-champagne-500', 'animate-pulse');
+                statusDot.classList.add('bg-rose-500');
+                statusText.textContent = "Model Load Failed";
+                showNotification("Collection Load Error", "Could not load the Teachable Machine model. Please check your internet connection and refresh.", "error");
+            }
+        }
+
+        function renderEmptyBars(labels) {
+            const container = document.getElementById('predictions-container');
+            container.innerHTML = labels.map((label, idx) => `
+                <div>
+                    <div class="flex justify-between text-sm font-semibold mb-1.5">
+                        <span class="text-noir-900 truncate pr-2">${label}</span>
+                        <span id="prob-text-${idx}" class="font-mono text-terracotta-600">0.0%</span>
+                    </div>
+                    <div class="w-full bg-ivory-200/80 rounded-full h-2.5 overflow-hidden">
+                        <div id="prob-bar-${idx}" class="bg-gradient-to-r from-noir-900 to-terracotta-500 h-2.5 rounded-full transition-all duration-150" style="width: 0%"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function startWebcam() {
+            if (!model || isWebcamRunning) return;
+            try {
+                const flip = true;
+                webcam = new tmImage.Webcam(400, 400, flip);
+                await webcam.setup();
+                await webcam.play();
+                isWebcamRunning = true;
+
+                const canvasContainer = document.getElementById('webcam-canvas-container');
+                canvasContainer.innerHTML = '';
+                canvasContainer.appendChild(webcam.canvas);
+                canvasContainer.classList.remove('hidden');
+
+                document.getElementById('webcam-placeholder').classList.add('hidden');
+                document.getElementById('scanner-overlay').classList.remove('hidden');
+                document.getElementById('btn-start-cam').classList.add('hidden');
+                document.getElementById('btn-stop-cam').classList.remove('hidden');
+                document.getElementById('btn-stop-cam').classList.add('flex');
+
+                updateViewportBadge("Live Mirror Active", "bg-emerald-500");
+                loop();
+            } catch (err) {
+                showNotification("Camera Permission Needed", "Please allow camera access in your browser settings or switch to the Lookbook Photo tab.", "error");
+            }
+        }
+
+        function stopWebcam() {
+            if (webcam && isWebcamRunning) {
+                webcam.stop();
+                isWebcamRunning = false;
+                if (animationFrameId) cancelAnimationFrame(animationFrameId);
+            }
+            document.getElementById('webcam-canvas-container').classList.add('hidden');
+            document.getElementById('webcam-placeholder').classList.remove('hidden');
+            document.getElementById('scanner-overlay').classList.add('hidden');
+            document.getElementById('btn-stop-cam').classList.add('hidden');
+            document.getElementById('btn-stop-cam').classList.remove('flex');
+            document.getElementById('btn-start-cam').classList.remove('hidden');
+            updateViewportBadge("Studio Standby", "bg-champagne-400");
+        }
+
+        async function loop() {
+            if (!isWebcamRunning) return;
+            webcam.update();
+            await predict(webcam.canvas);
+            animationFrameId = window.requestAnimationFrame(loop);
+        }
+
+        async function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file || !model) return;
+
+            const preview = document.getElementById('uploaded-image-preview');
+            const prompt = document.getElementById('upload-prompt');
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.onload = async function() {
+                    prompt.classList.add('hidden');
+                    preview.classList.remove('hidden');
+                    updateViewportBadge("Look Analyzed", "bg-terracotta-500");
+                    await predict(preview);
+                };
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function predict(imageElement) {
+            const startTime = performance.now();
+            const predictions = await model.predict(imageElement);
+            const elapsed = Math.round(performance.now() - startTime);
+
+            document.getElementById('inference-time-badge').textContent = `${elapsed} ms`;
+
+            let topPred = predictions[0];
+            predictions.forEach((p, idx) => {
+                if (p.probability > topPred.probability) topPred = p;
+                const pct = (p.probability * 100).toFixed(1);
+                const textEl = document.getElementById(`prob-text-${idx}`);
+                const barEl = document.getElementById(`prob-bar-${idx}`);
+                if (textEl && barEl) {
+                    textEl.textContent = `${pct}%`;
+                    barEl.style.width = `${pct}%`;
+                }
+            });
+
+            document.getElementById('top-class-name').textContent = topPred.className;
+            document.getElementById('top-class-confidence').textContent = `${(topPred.probability * 100).toFixed(1)}%`;
+        }
+
+        function switchMode(mode) {
+            const tabWebcam = document.getElementById('tab-webcam');
+            const tabUpload = document.getElementById('tab-upload');
+            const webcamSec = document.getElementById('webcam-section');
+            const uploadSec = document.getElementById('upload-section');
+
+            if (mode === 'webcam') {
+                tabWebcam.className = "flex items-center justify-center space-x-2 px-5 py-2 rounded-full text-xs uppercase tracking-wider font-bold transition-all bg-noir-900 text-ivory-50 shadow-sm";
+                tabUpload.className = "flex items-center justify-center space-x-2 px-5 py-2 rounded-full text-xs uppercase tracking-wider font-bold transition-all text-noir-800 hover:text-noir-950";
+                webcamSec.classList.remove('hidden');
+                uploadSec.classList.add('hidden');
+            } else {
+                stopWebcam();
+                tabUpload.className = "flex items-center justify-center space-x-2 px-5 py-2 rounded-full text-xs uppercase tracking-wider font-bold transition-all bg-noir-900 text-ivory-50 shadow-sm";
+                tabWebcam.className = "flex items-center justify-center space-x-2 px-5 py-2 rounded-full text-xs uppercase tracking-wider font-bold transition-all text-noir-800 hover:text-noir-950";
+                uploadSec.classList.remove('hidden');
+                webcamSec.classList.add('hidden');
+                updateViewportBadge("Lookbook Upload", "bg-terracotta-500");
+            }
+        }
+
+        function updateViewportBadge(text, dotColorClass) {
+            const badge = document.getElementById('viewport-badge');
+            badge.innerHTML = `<span class="w-2 h-2 rounded-full ${dotColorClass}"></span><span>${text}</span>`;
+        }
+
+        function showNotification(title, message, type) {
+            const banner = document.getElementById('notification-banner');
+            document.getElementById('notification-title').textContent = title;
+            document.getElementById('notification-message').textContent = message;
+            banner.className = `mb-6 p-4 rounded-2xl border flex items-start space-x-3 transition-all ${
+                type === 'error' ? 'bg-rose-50 border-rose-200 text-rose-800' : 'bg-ivory-100 border-ivory-300 text-noir-900'
+            }`;
+            banner.classList.remove('hidden');
+        }
+
+        function hideNotification() {
+            document.getElementById('notification-banner').classList.add('hidden');
+        }
+
+        // Drag and drop support for lookbook photo upload
+        const dropZone = document.getElementById('drop-zone');
+        if (dropZone) {
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('border-terracotta-500', 'bg-ivory-200/60');
+            });
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('border-terracotta-500', 'bg-ivory-200/60');
+            });
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('border-terracotta-500', 'bg-ivory-200/60');
+                if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                    const input = document.getElementById('image-file-input');
+                    input.files = e.dataTransfer.files;
+                    handleImageUpload({ target: input });
+                }
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', initModel);
+    </script>
+</body>
+</html>
