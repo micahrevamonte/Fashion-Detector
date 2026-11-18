@@ -44,32 +44,63 @@
                             600: '#a6492c',
                         },
                         champagne: {
-                            300: '#e8d5b7',
-                            400: '#d4b88c',
-                            500: '#b89660',
-                        }
+                        300: '#e8d5b7',
+                        400: '#d4b88c',
+                        500: '#b89660',
+                    }
+                },
+                animation: {
+                    'marquee': 'marquee 28s linear infinite',
+                    'scanline': 'scanline 3.2s ease-in-out infinite',
+                    'float-slow': 'floatSlow 8s ease-in-out infinite',
+                    'pulse-glow': 'pulseGlow 4s ease-in-out infinite',
+                },
+                keyframes: {
+                    marquee: {
+                        '0%': { transform: 'translateX(0%)' },
+                        '100%': { transform: 'translateX(-50%)' },
+                    },
+                    scanline: {
+                        '0%, 100%': { top: '6%', opacity: '0.25' },
+                        '50%': { top: '92%', opacity: '0.95' },
+                    },
+                    floatSlow: {
+                        '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+                        '50%': { transform: 'translateY(-14px) rotate(2deg)' },
+                    },
+                    pulseGlow: {
+                        '0%, 100%': { opacity: '0.45', transform: 'scale(1)' },
+                        '50%': { opacity: '0.8', transform: 'scale(1.06)' },
                     }
                 }
             }
         }
-    </script>
+    }
+</script>
 
-    <style>
-        /* Subtle fashion lookbook grid & linen weave texture */
-        .atelier-canvas {
-            background-color: #faf7f2;
-            background-image: 
-                radial-gradient(at 15% 15%, rgba(212, 184, 140, 0.16) 0px, transparent 50%),
-                radial-gradient(at 85% 20%, rgba(194, 94, 62, 0.08) 0px, transparent 50%);
-        }
+<style>
+    /* Subtle fashion lookbook grid & linen weave texture */
+    .atelier-canvas {
+        background-color: #faf7f2;
+        background-image: 
+            radial-gradient(at 15% 15%, rgba(212, 184, 140, 0.22) 0px, transparent 50%),
+            radial-gradient(at 85% 20%, rgba(194, 94, 62, 0.14) 0px, transparent 50%),
+            radial-gradient(at 50% 85%, rgba(24, 21, 22, 0.05) 0px, transparent 55%);
+    }
 
-        /* Editorial tailoring stitch divider */
-        .stitch-line {
-            background-image: linear-gradient(to right, #d4b88c 50%, transparent 50%);
-            background-size: 12px 1px;
-            background-repeat: repeat-x;
-        }
-    </style>
+    /* Editorial tailoring stitch divider */
+    .stitch-line {
+        background-image: linear-gradient(to right, #d4b88c 50%, transparent 50%);
+        background-size: 12px 1px;
+        background-repeat: repeat-x;
+    }
+
+    /* Luxury golden laser scan bar */
+    .mirror-laser {
+        background: linear-gradient(90deg, transparent, rgba(232, 213, 183, 0.9), rgba(217, 119, 87, 0.95), rgba(232, 213, 183, 0.9), transparent);
+        box-shadow: 0 0 18px 2px rgba(217, 119, 87, 0.65);
+    }
+</style>
 </head>
 <body class="bg-ivory-50 text-noir-900 antialiased selection:bg-noir-900 selection:text-ivory-50 flex flex-col min-h-screen">
 
@@ -102,17 +133,39 @@
     <!-- Main Content -->
     <main class="flex-grow">
 
+        <!-- Luxury Runway Ticker Banner -->
+        <div class="bg-noir-950 text-champagne-300 border-b border-noir-800 py-2 overflow-hidden select-none">
+            <div class="flex whitespace-nowrap animate-marquee text-[10px] sm:text-xs font-semibold uppercase tracking-[0.26em]">
+                <span class="mx-6">✦ Couture Silhouette Intelligence</span>
+                <span class="mx-6 text-terracotta-400">✦ Real-Time Virtual Fitting Mirror</span>
+                <span class="mx-6">✦ 100% Private On-Device TensorFlow.js</span>
+                <span class="mx-6 text-champagne-400">✦ Instant Lookbook Editorial Analysis</span>
+                <span class="mx-6">✦ Zero-Cost Community Style Studio</span>
+                <span class="mx-6">✦ Couture Silhouette Intelligence</span>
+                <span class="mx-6 text-terracotta-400">✦ Real-Time Virtual Fitting Mirror</span>
+                <span class="mx-6">✦ 100% Private On-Device TensorFlow.js</span>
+                <span class="mx-6 text-champagne-400">✦ Instant Lookbook Editorial Analysis</span>
+                <span class="mx-6">✦ Zero-Cost Community Style Studio</span>
+            </div>
+        </div>
+
         <!-- Hero Section: High-Fashion Editorial Lookbook -->
-        <section class="relative overflow-hidden pt-14 pb-20 sm:pt-20 sm:pb-28 atelier-canvas border-b border-ivory-300/80">
+        <section class="relative overflow-hidden pt-14 pb-20 sm:pt-24 sm:pb-32 atelier-canvas border-b border-ivory-300/80">
+            <!-- Ambient Floating Couture Glows & Decorative Editorial Rings -->
+            <div class="pointer-events-none absolute -top-24 -left-24 w-96 h-96 rounded-full bg-gradient-to-br from-champagne-300/35 to-terracotta-400/20 blur-3xl animate-pulse-glow" aria-hidden="true"></div>
+            <div class="pointer-events-none absolute -bottom-24 -right-24 w-[28rem] h-[28rem] rounded-full bg-gradient-to-tl from-terracotta-500/20 to-champagne-400/25 blur-3xl animate-pulse-glow" aria-hidden="true"></div>
+            <div class="pointer-events-none hidden lg:block absolute top-16 right-16 w-32 h-32 rounded-full border border-champagne-400/40 animate-float-slow" aria-hidden="true"></div>
+            <div class="pointer-events-none hidden lg:block absolute bottom-16 left-16 w-24 h-24 rounded-full border border-terracotta-400/30 animate-float-slow" aria-hidden="true"></div>
+
             <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                 <!-- Model Status Pill -->
-                <div class="inline-flex items-center space-x-2.5 px-4 py-1.5 rounded-full bg-white border border-ivory-300 shadow-sm mb-7">
+                <div class="inline-flex items-center space-x-2.5 px-4 py-1.5 rounded-full bg-white/95 backdrop-blur border border-ivory-300 shadow-md shadow-noir-900/5 mb-7">
                     <span id="header-status-dot" class="w-2 h-2 rounded-full bg-champagne-500 animate-pulse"></span>
                     <span id="header-status-text" class="text-[11px] font-bold uppercase tracking-[0.18em] text-noir-800">Curating Style Model...</span>
                 </div>
                 
-                <h1 class="font-editorial text-4xl sm:text-6xl lg:text-7xl font-bold text-noir-950 tracking-tight leading-[1.08] mb-6">
-                    Intelligent Style Recognition for <span class="italic font-semibold text-terracotta-500">Modern Wardrobes</span>
+                <h1 class="font-editorial text-4xl sm:text-6xl lg:text-7xl font-bold text-noir-950 tracking-tight leading-[1.06] mb-6">
+                    Intelligent Style Recognition for <span class="italic font-semibold text-transparent bg-clip-text bg-gradient-to-r from-terracotta-600 via-terracotta-500 to-champagne-500">Modern Wardrobes</span>
                 </h1>
                 
                 <p class="text-base sm:text-lg text-noir-800/80 max-w-2xl mx-auto leading-relaxed mb-9 font-normal">
@@ -120,10 +173,11 @@
                 </p>
 
                 <div class="flex flex-wrap items-center justify-center gap-4">
-                    <a href="#classifier" class="px-7 py-3.5 rounded-full bg-noir-900 hover:bg-terracotta-600 text-ivory-50 font-semibold text-xs uppercase tracking-[0.15em] shadow-lg shadow-noir-900/15 transition-all transform hover:-translate-y-0.5">
-                        Enter Fitting Studio
+                    <a href="#classifier" class="group px-8 py-4 rounded-full bg-gradient-to-r from-noir-950 via-noir-900 to-noir-800 hover:from-terracotta-600 hover:to-terracotta-500 text-ivory-50 font-semibold text-xs uppercase tracking-[0.18em] shadow-xl shadow-noir-900/20 transition-all duration-300 transform hover:-translate-y-0.5 flex items-center space-x-2">
+                        <span>Enter Fitting Studio</span>
+                        <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                     </a>
-                    <a href="#community-significance" class="px-7 py-3.5 rounded-full bg-white hover:bg-ivory-100 text-noir-900 font-semibold text-xs uppercase tracking-[0.15em] border border-ivory-300 shadow-sm transition-all">
+                    <a href="#community-significance" class="px-8 py-4 rounded-full bg-white/95 hover:bg-ivory-100 text-noir-900 font-semibold text-xs uppercase tracking-[0.18em] border border-ivory-300 shadow-sm transition-all duration-300 hover:border-terracotta-400">
                         Community Significance
                     </a>
                 </div>
@@ -195,13 +249,13 @@
                                 </div>
 
                                 <div id="webcam-canvas-container" class="w-full h-full hidden [&>canvas]:w-full [&>canvas]:h-full [&>canvas]:object-cover"></div>
-                                
-                                <!-- Editorial Framing Guides -->
-                                <div id="scanner-overlay" class="hidden pointer-events-none absolute inset-4 border border-champagne-300/40 rounded-xl">
-                                    <div class="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-champagne-300 rounded-tl"></div>
-                                    <div class="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-champagne-300 rounded-tr"></div>
-                                    <div class="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-champagne-300 rounded-bl"></div>
-                                    <div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-champagne-300 rounded-br"></div>
+                                <!-- Editorial Framing Guides & Animated Laser Scanline -->
+                                <div id="scanner-overlay" class="hidden pointer-events-none absolute inset-4 border border-champagne-300/40 rounded-xl overflow-hidden">
+                                    <div class="absolute left-0 right-0 h-0.5 mirror-laser animate-scanline"></div>
+                                    <div class="absolute top-0 left-0 w-5 h-5 border-t-2 border-l-2 border-champagne-300 rounded-tl"></div>
+                                    <div class="absolute top-0 right-0 w-5 h-5 border-t-2 border-r-2 border-champagne-300 rounded-tr"></div>
+                                    <div class="absolute bottom-0 left-0 w-5 h-5 border-b-2 border-l-2 border-champagne-300 rounded-bl"></div>
+                                    <div class="absolute bottom-0 right-0 w-5 h-5 border-b-2 border-r-2 border-champagne-300 rounded-br"></div>
                                 </div>
                             </div>
 
@@ -246,13 +300,16 @@
                 <div class="lg:col-span-5 flex flex-col gap-6">
                     
                     <!-- Top Style Match Card -->
-                    <div class="bg-noir-900 rounded-3xl p-7 sm:p-8 text-ivory-50 shadow-xl relative overflow-hidden border border-noir-800">
-                        <div class="absolute -right-10 -top-10 w-40 h-40 bg-terracotta-500/20 rounded-full blur-2xl pointer-events-none"></div>
-                        <div class="absolute -left-8 -bottom-8 w-32 h-32 bg-champagne-400/15 rounded-full blur-2xl pointer-events-none"></div>
+                    <div class="bg-gradient-to-br from-noir-950 via-noir-900 to-noir-800 rounded-3xl p-7 sm:p-8 text-ivory-50 shadow-2xl shadow-noir-900/20 relative overflow-hidden border border-champagne-400/25">
+                        <div class="absolute -right-10 -top-10 w-44 h-44 bg-terracotta-500/25 rounded-full blur-2xl pointer-events-none"></div>
+                        <div class="absolute -left-8 -bottom-8 w-36 h-36 bg-champagne-400/20 rounded-full blur-2xl pointer-events-none"></div>
                         
                         <div class="flex items-center justify-between mb-3">
-                            <span class="text-[11px] font-bold uppercase tracking-[0.2em] text-champagne-300">Primary Style Match</span>
-                            <span id="inference-time-badge" class="text-xs font-mono text-ivory-200 bg-white/10 px-2.5 py-0.5 rounded-full">Ready</span>
+                            <span class="inline-flex items-center space-x-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-champagne-300">
+                                <span class="w-1.5 h-1.5 rounded-full bg-terracotta-400"></span>
+                                <span>Primary Style Match</span>
+                            </span>
+                            <span id="inference-time-badge" class="text-xs font-mono text-ivory-200 bg-white/10 border border-white/10 px-3 py-0.5 rounded-full">Ready</span>
                         </div>
                         
                         <div id="top-class-name" class="font-editorial text-3xl sm:text-4xl font-bold tracking-tight text-white truncate">
@@ -260,8 +317,19 @@
                         </div>
                         
                         <div class="mt-4 flex items-baseline space-x-2">
-                            <span id="top-class-confidence" class="font-editorial text-4xl sm:text-5xl font-bold text-terracotta-400">0.0%</span>
+                            <span id="top-class-confidence" class="font-editorial text-4xl sm:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-terracotta-400 to-champagne-300">0.0%</span>
                             <span class="text-xs uppercase tracking-wider text-ivory-300/80">style match</span>
+                        </div>
+                    </div>
+
+                    <!-- Quick Stylist Framing Tips Card -->
+                    <div class="bg-gradient-to-r from-ivory-100 to-ivory-200/70 rounded-2xl p-4 sm:p-5 border border-ivory-300/90 flex items-start space-x-3.5">
+                        <div class="w-8 h-8 rounded-full bg-noir-900 text-champagne-300 flex items-center justify-center flex-shrink-0 mt-0.5 text-xs font-editorial italic font-bold">
+                            i
+                        </div>
+                        <div class="text-xs text-noir-800/85 leading-relaxed">
+                            <span class="font-bold uppercase tracking-wider text-noir-950 block mb-0.5">Stylist Tip for Best Accuracy</span>
+                            Center the garment or outfit in bright, even lighting against a clean backdrop for crisp silhouette detection.
                         </div>
                     </div>
 
@@ -321,8 +389,8 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     
                     <!-- Card 1: Connects Live Mirror & Photo Upload to Thrift, Wardrobe & Small Boutiques -->
-                    <article class="bg-ivory-50 rounded-3xl p-8 border border-ivory-300 hover:border-terracotta-400 hover:shadow-xl hover:shadow-noir-900/5 transition-all flex flex-col">
-                        <div class="w-12 h-12 rounded-full bg-noir-900 text-champagne-300 flex items-center justify-center shadow-sm mb-6">
+                    <article class="group bg-ivory-50 rounded-3xl p-8 border border-ivory-300 hover:border-terracotta-400 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-noir-900/10 transition-all duration-300 flex flex-col">
+                        <div class="w-12 h-12 rounded-full bg-noir-900 group-hover:bg-terracotta-600 text-champagne-300 group-hover:text-white transition-colors flex items-center justify-center shadow-sm mb-6">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
                         </div>
                         <h3 class="font-editorial text-2xl font-bold text-noir-950 mb-3">Empowering Thrifters &amp; Local Boutiques</h3>
@@ -335,8 +403,8 @@
                     </article>
 
                     <!-- Card 2: Connects Style Breakdown Bars to Fashion Students & Inclusive Styling -->
-                    <article class="bg-ivory-50 rounded-3xl p-8 border border-ivory-300 hover:border-terracotta-400 hover:shadow-xl hover:shadow-noir-900/5 transition-all flex flex-col">
-                        <div class="w-12 h-12 rounded-full bg-terracotta-500 text-white flex items-center justify-center shadow-sm mb-6">
+                    <article class="group bg-ivory-50 rounded-3xl p-8 border border-ivory-300 hover:border-terracotta-400 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-noir-900/10 transition-all duration-300 flex flex-col">
+                        <div class="w-12 h-12 rounded-full bg-terracotta-500 group-hover:bg-noir-900 text-white group-hover:text-champagne-300 transition-colors flex items-center justify-center shadow-sm mb-6">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
                         </div>
                         <h3 class="font-editorial text-2xl font-bold text-noir-950 mb-3">Accessible Style Feedback &amp; Design Learning</h3>
@@ -349,8 +417,8 @@
                     </article>
 
                     <!-- Card 3: Connects Client-Side TensorFlow.js to Dressing-Room Privacy -->
-                    <article class="bg-ivory-50 rounded-3xl p-8 border border-ivory-300 hover:border-terracotta-400 hover:shadow-xl hover:shadow-noir-900/5 transition-all flex flex-col">
-                        <div class="w-12 h-12 rounded-full bg-champagne-500 text-white flex items-center justify-center shadow-sm mb-6">
+                    <article class="group bg-ivory-50 rounded-3xl p-8 border border-ivory-300 hover:border-terracotta-400 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-noir-900/10 transition-all duration-300 flex flex-col">
+                        <div class="w-12 h-12 rounded-full bg-champagne-500 group-hover:bg-noir-900 text-white group-hover:text-champagne-300 transition-colors flex items-center justify-center shadow-sm mb-6">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                         </div>
                         <h3 class="font-editorial text-2xl font-bold text-noir-950 mb-3">True Fitting-Room Privacy</h3>
@@ -393,19 +461,19 @@
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                    <div class="bg-white p-6 rounded-2xl border border-ivory-300 shadow-sm">
+                    <div class="bg-white p-6 rounded-2xl border border-ivory-300 shadow-sm hover:border-terracotta-400 hover:-translate-y-1 transition-all duration-300">
                         <div class="text-terracotta-600 font-editorial font-bold text-lg mb-1.5">01. Browser Model Sync</div>
                         <p class="text-xs text-noir-800/75 leading-relaxed">Loads your trained Teachable Machine style model directly via TensorFlow.js when the lookbook opens.</p>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl border border-ivory-300 shadow-sm">
+                    <div class="bg-white p-6 rounded-2xl border border-ivory-300 shadow-sm hover:border-terracotta-400 hover:-translate-y-1 transition-all duration-300">
                         <div class="text-terracotta-600 font-editorial font-bold text-lg mb-1.5">02. Mirror &amp; Photo Modes</div>
                         <p class="text-xs text-noir-800/75 leading-relaxed">Supports real-time webcam outfit checks and drag-and-drop lookbook image uploads.</p>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl border border-ivory-300 shadow-sm">
+                    <div class="bg-white p-6 rounded-2xl border border-ivory-300 shadow-sm hover:border-terracotta-400 hover:-translate-y-1 transition-all duration-300">
                         <div class="text-terracotta-600 font-editorial font-bold text-lg mb-1.5">03. Live Style Telemetry</div>
                         <p class="text-xs text-noir-800/75 leading-relaxed">Displays top matched style categories, confidence percentages, and millisecond response speed.</p>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl border border-ivory-300 shadow-sm">
+                    <div class="bg-white p-6 rounded-2xl border border-ivory-300 shadow-sm hover:border-terracotta-400 hover:-translate-y-1 transition-all duration-300">
                         <div class="text-terracotta-600 font-editorial font-bold text-lg mb-1.5">04. Zero-Cloud Privacy</div>
                         <p class="text-xs text-noir-800/75 leading-relaxed">Performs all inference locally in the browser so personal wardrobe images never leave your device.</p>
                     </div>
